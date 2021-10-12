@@ -1,0 +1,497 @@
+﻿<Window x:Class="Tabitems.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Призма" Height="520" Width="850">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+
+        <Style x:Key="PlaceholderTextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="LightGray"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+                                <TextBlock x:Name="textBlock"
+                                               Margin="2,0,0,0"
+                                               Foreground="{TemplateBinding BorderBrush}"
+                                               IsHitTestVisible="False"
+                                               Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="textBlock" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.56"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Order_info" TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="black"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Width" Value="100"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#F4F9FD"/>
+            <Setter Property="BorderBrush" Value="#D0DDF3"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Margin" Value="3"/>
+        </Style>
+        <Style x:Key="More_button" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#F4F9FD"/>
+            <Setter Property="BorderBrush" Value="#D0DDF3"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="0,3,0,0"/>
+        </Style>
+        <Style TargetType="Border">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#D0DDF3"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.05*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.47*"/>
+            <!--1.47*-->
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="0.53*"/>
+            <!--0.53*-->
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="3" Background="#D2E7F7" BorderBrush="#5C8AD6" BorderThickness="1">
+            <MenuItem Header="Заказы" Width="90" Height="38">
+                <MenuItem Header="Создать заказ" Command="{Binding AddOrderCommand}"/>
+                <MenuItem Header="Завершить" Command="{Binding OrderComplete}" CommandParameter="{Binding SelectedOrder}"/>
+                <MenuItem Header="Закрыть" Command="{Binding CloseOrderCommand}" CommandParameter="{Binding SelectedOrder}"/>
+                <MenuItem Header="Показать незавершенные" Command="{Binding NotCompleteCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Отчеты" Width="120" Height="38">
+                <MenuItem Header="Потраченные миксы" Command="{Binding SpentMixReportCommand}"/>
+                <MenuItem Header="Себестоимость заказа"/>
+            </MenuItem>
+            <MenuItem Header="Настройки" Width="120" Height="38">
+                <MenuItem Header="Подключение весов"/>
+            </MenuItem>
+            <MenuItem Header="Склад" Width="120" Height="38">
+                <MenuItem Header="Добавить товар"/>
+                <MenuItem Header="Удалить товар"/>
+                <MenuItem Header="Редактировать товар"/>
+            </MenuItem>
+        </Menu>
+
+
+        <TabControl Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}" BorderBrush="#D0DDF3">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Height="20" Width="240">
+                        <TextBlock FontSize="12" Text="{Binding Path=OrderHeader}" HorizontalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <!-- Поле заказов -->
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ScrollViewer HorizontalScrollBarVisibility="Visible">
+                        <StackPanel MaxWidth="806">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="1200"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.1*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Строка с информацией о заказе -->
+
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Orientation="Horizontal" Margin="12,0,0,0">
+                                    <TextBlock Text="{Binding Path=orderInfo.Client}" Padding="0,0,25,0"/>
+                                    <TextBlock Text="{Binding Path=orderInfo.Auto}" Padding="0,0,25,0"/>
+                                    <TextBlock Text="{Binding Path=orderInfo.ColorGroup}" Padding="0,0,25,0"/>
+                                    <TextBlock Text="{Binding Path=orderInfo.ColorCode}" Padding="0,0,25,0"/>
+                                </StackPanel>
+                                <!-- Тара и вес готовой краски -->
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Label Style="{StaticResource Order_info}" Content="тара" Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=Tare}" Width="60"/>
+                                    <Label Style="{StaticResource Order_info}" Content="масса всей смеси" Width="110"/>
+                                    <TextBox Text="{Binding Path= CurrentVolume}" Width="60"/>
+                                    <Label Style="{StaticResource Order_info}" Content="предыдущая смесь + тара" Width="160"/>
+                                    <TextBox Text="{Binding Path= PlusTare}" Width="60"/>
+                                    <Label Style="{StaticResource Order_info}" Content="итерации: " Width="66" Margin="60,0,0,0"/>
+                                    <Label Style="{StaticResource Order_info}" Content="{Binding Path= IterationCount}" Width="20"/>
+                                    <!--<ComboBox Grid.Column="1" Grid.Row="3" ItemsSource="{Binding mixesName}" >
+                                </ComboBox>-->
+                                </StackPanel>
+                                <!-- Расчетная таблица -->
+  
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="2" Orientation="Horizontal">
+                                    <Label Style="{StaticResource Order_info}" Content="MIX" Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=mixesName[0]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[1]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[2]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[3]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[4]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[5]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[6]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[7]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[8]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[9]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[10]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[11]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox Text="{Binding Path=mixesName[12]}" PreviewKeyDown="TextBox_KeyDown" GotKeyboardFocus="TextBoxGotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" Background="#D3F086"/>
+                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[13]}" Background="#D3F086"/>
+                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[14]}" Background="#D3F086"/>
+                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[15]}" Background="#D3F086"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="3" Orientation="Horizontal">
+                                    <Label Style="{StaticResource Order_info}" Content="добавление" Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=M1}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="0"/>
+                                    <TextBox Text="{Binding Path=M2}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="1"/>
+                                    <TextBox Text="{Binding Path=M3}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="2"/>
+                                    <TextBox Text="{Binding Path=M4}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="3"/>
+                                    <TextBox Text="{Binding Path=M5}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="4"/>
+                                    <TextBox Text="{Binding Path=M6}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="5"/>
+                                    <TextBox Text="{Binding Path=M7}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="6"/>
+                                    <TextBox Text="{Binding Path=M8}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="7"/>
+                                    <TextBox Text="{Binding Path=M9}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="8"/>
+                                    <TextBox Text="{Binding Path=M10}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="9"/>
+                                    <TextBox Text="{Binding Path=M11}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="10"/>
+                                    <TextBox Text="{Binding Path=M12}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="11"/>
+                                    <TextBox Text="{Binding Path=M13}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="12"/>
+                                    <TextBox Text="{Binding Path=M14}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="13"/>
+                                    <TextBox Text="{Binding Path=M15}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="14"/>
+                                    <TextBox Text="{Binding Path=M16}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="15"/>
+                                    <TextBox IsReadOnly="True" Text="{Binding Path=SummAddMix}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="4" Orientation="Horizontal">
+                                    <Label Style="{StaticResource Order_info}" Content="миксы %" Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=Pm1}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm2}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm3}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm4}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm5}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm6}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm7}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm8}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm9}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm10}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm11}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm12}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm13}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm14}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm15}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=Pm16}" Background="#FDF097"/>
+                                    <TextBox Text="{Binding Path=PercentPointer1}" Background="#FDF097"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="5" Orientation="Horizontal">
+                                    <Label Style="{StaticResource Order_info}" Content="пигменты %" Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=Pm1_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm2_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm3_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm4_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm5_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm6_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm7_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm8_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm9_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm10_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm11_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm12_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm13_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm14_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm15_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=Pm16_}" Background="#FF817D"/>
+                                    <TextBox Text="{Binding Path=PercentPointer2}" Background="#FF817D"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="6" Orientation="Horizontal">
+                                    <Label Style="{StaticResource Order_info}" Content="объем абс." Margin="6,0,0,0"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[0]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[1]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[2]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[3]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[4]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[5]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[6]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[7]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[8]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[9]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[10]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[11]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[12]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[13]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[14]}"/>
+                                    <TextBox Text="{Binding Path=afterTestMixes[15]}"/>
+                                    <TextBox Text="{Binding Path=ThickPaint}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Grid.Row="7" Orientation="Horizontal">
+                                    <!-- Тестирование краски -->
+                                    <Label Style="{StaticResource Order_info}" Content="выкрашивание" Margin="6,0,0,0"/>
+                                    <Label Style="{StaticResource Order_info}"  Content="брутто до" Margin="100,0,0,0" HorizontalContentAlignment="Right"/>
+                                    <TextBox Text="{Binding Path=BeforeBrutto}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="16"/>
+                                    <Label Style="{StaticResource Order_info}" Content="брутто после" Margin="20,0,0,0" HorizontalContentAlignment="Right"/>
+                                    <TextBox Text="{Binding Path=AfterBrutto}" PreviewKeyDown="TextBox_PreviewKeyDown" TabIndex="17" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                                        <Label Style="{StaticResource Order_info}" Content="тест" Margin="20,0,0,0" HorizontalContentAlignment="Right" />
+                                        <TextBox Text="{Binding Path=Test}" TabIndex="18"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Список итераций -->
+
+                                <ListBox ItemsSource="{Binding iterations}" SelectedItem="{Binding SelectedIteration}" Background="#F3F8F8" HorizontalContentAlignment="Left"  Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Height="180">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Order_info}" Content="MIX"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[0].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[1].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[2].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[3].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[4].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[5].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[6].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[7].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[8].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[9].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[10].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[11].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[12].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[13].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[14].MixName}" Background="#E6F7B9"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[15].MixName}" Background="#E6F7B9"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Order_info}" Content="добавление"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[0].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[1].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[2].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[3].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[4].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[5].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[6].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[7].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[8].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[9].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[10].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[11].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[12].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[13].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[14].MixAdd}"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[15].MixAdd}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Order_info}" Content="миксы %"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[0].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[1].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[2].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[3].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[4].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[5].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[6].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[7].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[8].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[9].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[10].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[11].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[12].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[13].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[14].MixPercent_1}" Background="#FDF1A2"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[15].MixPercent_1}" Background="#FDF1A2"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Order_info}" Content="пигменты %"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[0].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[1].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[2].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[3].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[4].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[5].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[6].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[7].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[8].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[9].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[10].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[11].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[12].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[13].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[14].MixPercent_2}" Background="#FF817D"/>
+                                                    <TextBox IsReadOnly="True" Text="{Binding Path=mixes[15].MixPercent_2}" Background="#FF817D"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Order_info}" Content="тест"/>
+                                                    <TextBox Text="{Binding Path=mixes[0].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[1].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[2].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[3].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[4].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[5].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[6].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[7].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[8].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[9].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[10].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[11].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[12].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[13].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[14].TestWeight}"/>
+                                                    <TextBox Text="{Binding Path=mixes[15].TestWeight}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+
+            </TabControl.ContentTemplate>
+
+
+            <!-- Контекст меню для заказов -->
+            <TabControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="использовать пропорцию" Command="{Binding UseProportion}"/>
+                    <MenuItem Header="создать заказ на основе текущего" Command="{Binding UseRecipe}" CommandParameter="{Binding SelectedOrder}"/>
+                    <MenuItem Header="отменить итерацию" Command="{Binding CancelIterationCommand}" CommandParameter="{Binding SelectedOrder}"/>
+                </ContextMenu>
+            </TabControl.ContextMenu>
+        </TabControl>
+        <!-- Кнопки управления заказом -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="брутто до" Command="{Binding AddToPrevious}" CommandParameter="{Binding SelectedOrder}"/>
+            <Button  Content="итерация" Command="{Binding AddIterationCommand}"/>
+            <Button  Content="закрыть" Command="{Binding CloseOrderCommand}" CommandParameter="{Binding SelectedOrder}"/>
+            <Button Content="завершить" Command="{Binding OrderComplete}" CommandParameter="{Binding SelectedOrder}"/>
+            <Button Content="удалить" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedOrder}"/>
+        </StackPanel>
+        <!-- Разделитель -->
+        <GridSplitter Grid.Row="2" Grid.Column="1" Grid.RowSpan="4" ShowsPreview="False" Width="3" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <ScrollViewer Grid.Row="2" Grid.Column="2" Grid.RowSpan="4">
+            <Grid Grid.Row="2" Grid.Column="2" Grid.RowSpan="4">
+                <!-- Панель списка заказов -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="130"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!-- Подключение весов -->
+                <StackPanel Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Left" Margin="0,10,0,0">
+                    <Label x:Name="scales_field" Content="Весы" Height="26" FontSize="12"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Width="80" Content="подключить" Click="Start_Click"/>
+                        <Button Width="80" Content="отключить" Click="Stop_Click"/>
+                    </StackPanel>
+                    <!-- Ввод параметров поиска -->
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="марка автомобиля" Text="{Binding AutoField}"></TextBox>
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="код краски"  Text="{Binding ColorcodeField}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="цветовая группа" Text="{Binding ColorgroupField}"></TextBox>
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="клиент" Text="{Binding ClientField}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="гггг-мм-дд" Text="{Binding DateField}"></TextBox>
+                            <TextBox Width="168" Margin="2" Style="{StaticResource PlaceholderTextBox}" Tag="id заказа" Text="{Binding IdField}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Command="{Binding ViewOrdersCollectionCommand}" Content="показать"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- Список заказов по результатам поиска -->
+                    <StackPanel  Grid.Row="2" Margin="0,10,0,0">
+                        <!--x:Uid="rty"-->
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="id" Width="40" Padding="10,0,0,0"/>
+                            <Label Content="дата" Width="80" Padding="10,0,0,0"/>
+                            <Label Content="марка авто" Width="100" Padding="10,0,0,0"/>
+                            <Label Content="клиент" Width="120" Padding="10,0,0,0"/>
+                            <Label Content="цвет авто" Width="80" Padding="10,0,0,0"/>
+                            <Label Content="код" Width="140" Padding="10,0,0,0"/>
+                            <Label Content="статус" Width="60" Padding="10,0,0,0"/>
+                        </StackPanel>
+
+                        <ListBox ItemsSource="{Binding OrdersRows}" SelectedItem="{Binding SelectedRow}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding OrderId }" Width="40"/>
+                                        <Label Content="{Binding Orderdate}" Width="80"/>
+                                        <Label Content="{Binding Automobile}" Width="100"/>
+                                        <Label Content="{Binding Client}" Width="120"/>
+                                        <Label Content="{Binding Colorgroup}" Width="80"/>
+                                        <Label Content="{Binding Colorcode}" Width="140"/>
+                                        <Label Content="{Binding Orderstatus}" Width="60"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <!-- Контекст меню для списка заказов -->
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="открыть" Command="{Binding OpenOrder}"/>
+                                    <MenuItem Header="завершить" Command="{Binding SelectedOrderComplete}"/>
+                                    <MenuItem Header="пометить как брак" Command="{Binding SelectedOrderDefective}"/>
+                                    <MenuItem Header="удалить заказ" Command="{Binding RemoveFromTheList}"/>
+                                    <MenuItem Header="редактировать заказ" Command="{Binding RedactOrderCommand}"/>
+
+                                    <MenuItem Header="сортировка">
+                                        <MenuItem Header="по клиенту"  Command="{Binding SortClient}"/>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                        <!-- Кнопка 'показать больше" -->
+                        <Button Visibility="{Binding CanPressButton}" Content="показать больше" Style="{StaticResource More_button}" Command="{Binding ViewMoreOrdersCollectionCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+
+
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

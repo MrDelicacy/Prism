@@ -1,0 +1,91 @@
+﻿<Window x:Class="Tabitems.UseProportionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tabitems"
+        mc:Ignorable="d"
+        Title="UseProportionWindow" Height="250" Width="850" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="MixName" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="#D3F086"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style x:Key="MixPercent1" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="#FDF097"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style x:Key="Order_info" TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Width" Value="80"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#F4F9FD"/>
+            <Setter Property="BorderBrush" Value="#D0DDF3"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Margin" Value="3"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.05*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="1" Grid.Column="1" Content="Данная пропорция будет использована в текущей итерации заказа. Укажите вес добавляемой краски."/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+            <Label Style="{StaticResource Order_info}" Content="MIX"/>
+            <TextBox Text="{Binding Path=mixesName[0]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[1]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[2]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[3]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[4]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[5]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[6]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[7]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[8]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[9]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[10]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[11]}" Style="{StaticResource MixName}"/>
+            <TextBox Text="{Binding Path=mixesName[12]}" Style="{StaticResource MixName}"/>
+            <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[13]}" Style="{StaticResource MixName}"/>
+            <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[14]}" Style="{StaticResource MixName}"/>
+            <TextBox IsReadOnly="True" Text="{Binding Path=mixesName[15]}" Style="{StaticResource MixName}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1">
+            <Label Style="{StaticResource Order_info}" Content="миксы %"/>
+            <TextBox Text="{Binding Path=Pm1}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm2}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm3}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm4}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm5}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm6}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm7}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm8}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm9}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm10}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm11}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm12}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm13}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm14}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm15}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=Pm16}" Style="{StaticResource MixPercent1}"/>
+            <TextBox Text="{Binding Path=PercentPointer1}" Style="{StaticResource MixPercent1}"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Margin="0,0,80,0">
+            <Button IsDefault="True" Click="Accept_Click">OK</Button>
+            <Button IsCancel="True">Отмена</Button>
+        </StackPanel>
+    </Grid>
+</Window>
